@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    container_name: vault-frontend
+    ports:
+      - 80:80
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_GOOGLE_CLIENT_ID=google_client_id
+    depends_on:
+      - gateway
+    restart: always
+
+  
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: ./Dockerfile
+    container_name: gateway
+    ports:
+      - 8000:8000
+    environment:
+      - PORT=8000
+      - CLIENT_URL=http://localhost
+      - USER_SERVICE=http://user-service:5001
+      - VAULT_SERVICE=http://vault-service:5002
+    secrets:
+      - access_token_secret
+      - access_token_expiry
+    depends_on:
+      - user-service
+      - vault-service
+    restart: always
+    
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: ./Dockerfile
+    container_name: user_service
+    environment:
+      - PORT=5001
+    secrets:
+      - access_token_secret
+      - access_token_expiry
+      - refresh_token_secret
+      - refresh_token_expiry
+      - google_client_id
+      - google_client_secret
+      - mongodb_uri
+    restart: always
+    depends_on:
+      - mongo
+  
+  vault-service:
+    build:
+      context: ./vault-service
+      dockerfile: ./Dockerfile
+    container_name: vault_service
+    environment:
+      - PORT=5002
+      - NODE_OPTIONS=--network-family-autoselection-attempt-timeout=1000
+    secrets:
+      - access_token_secret
+      - access_token_expiry
+      - cloudinary_cloud_name
+      - cloudinary_api_key
+      - cloudinary_api_secret
+      - mongodb_uri
+    restart: always
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+
+secrets:
+  access_token_secret:
+    file: ./secrets/access_token_secret.txt
+
+  access_token_expiry:
+    file: ./secrets/access_token_expiry.txt
+
+  refresh_token_secret:
+    file: ./secrets/refresh_token_secret.txt
+  
+  refresh_token_expiry:
+    file: ./secrets/refresh_token_expiry.txt
+
+  google_client_id:
+    file: ./secrets/google_client_id.txt
+
+  google_client_secret:
+    file: ./secrets/google_client_secret.txt
+
+  cloudinary_cloud_name:
+    file: ./secrets/cloudinary_cloud_name.txt
+
+  cloudinary_api_key:
+    file: ./secrets/cloudinary_api_key.txt
+
+  cloudinary_api_secret:
+    file: ./secrets/cloudinary_api_secret.txt
+  
+  mongodb_uri:
+    file: ./secrets/mongodb_uri.txt
+
+volumes:
+  mongo_data:
