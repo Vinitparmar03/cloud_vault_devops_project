@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: vinitparmar03/cloudvault-user-service:05
+        ports:
+        - containerPort: 5001
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: PORT_USER_SERVICE
+        envFrom:
+        - secretRef:
+            name: mongodb-secrets
+        - secretRef:
+            name: google-secrets
+        - secretRef:
+            name: jwt-secrets

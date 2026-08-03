@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-service-deployment
+  labels:
+    app: vault-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-service
+  
+  template:
+    metadata:
+      labels:
+        app: vault-service
+    spec:
+      containers:
+      - name: vault-service
+        image: vinitparmar03/cloudvault-vault-service:06
+        ports:
+        - containerPort: 5002
+        env:
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: env-config
+                key: PORT_VAULT_SERVICE
+          - name: NODE_OPTIONS
+            valueFrom:
+              configMapKeyRef:
+                name: env-config
+                key: NODE_OPTIONS
+        envFrom:
+          - secretRef:
+              name: mongodb-secrets
+          - secretRef:
+              name: cloudinary-secrets
+          - secretRef:
+              name: jwt-secrets

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deployment
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: vinitparmar03/cloudvault-gateway:05
+        ports:
+        - containerPort: 8000
+        env:
+        - name: USER_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: USER_SERVICE
+        - name: VAULT_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: VAULT_SERVICE
+        - name: CLIENT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: CLIENT_URL
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: PORT_GATEWAY
+        - name: ACCESS_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secrets
+              key: ACCESS_TOKEN_SECRET
+        - name: ACCESS_TOKEN_EXPIRY
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secrets
+              key: ACCESS_TOKEN_EXPIRY

@@ -13,7 +13,7 @@ node_modules/
 # ===========================
 # Docker Secrets
 # ===========================
-secrets/
+/secrets/
 *.pem
 *.key
 *.crt
