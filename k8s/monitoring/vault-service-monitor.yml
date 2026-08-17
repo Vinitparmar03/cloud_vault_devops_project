@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: vault-service-monitor
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: vault-service
+  namespaceSelector:
+    matchNames:
+    - default
+  endpoints:
+  - interval: 30s
+    port: http
+    path: /metrics
+  

@@ -9,6 +9,7 @@ import {
     generateRefreshToken,
     verifyRefreshToken,
 } from "../utils/jwt.js";
+import { userGoogleLoginFailureCounter, userGoogleLoginSuccessCounter } from "../metrics/metrics.js";
 
 const accessCookieOptions = {
     httpOnly: true,
@@ -27,6 +28,11 @@ const refreshCookieOptions = {
 export const googleLogin = asyncHandler(async (req, res) => {
     const { idToken } = req.body;
     if (!idToken) {
+        userGoogleLoginFailureCounter.inc({
+            method: req.method,
+            route: req.route?.path || req.path,
+            status_code: 400,
+        });
         throw new ApiError(400, "Google ID Token is required");
     }
 
@@ -38,6 +44,11 @@ export const googleLogin = asyncHandler(async (req, res) => {
     const payload = ticket.getPayload();
 
     if (!payload) {
+        userGoogleLoginFailureCounter.inc({
+            method: req.method,
+            route: req.route?.path || req.path,
+            status_code: 401,
+        })
         throw new ApiError(401, "Invalid Google Token");
     }
 
@@ -62,6 +73,12 @@ export const googleLogin = asyncHandler(async (req, res) => {
 
     await user.save({
         validateBeforeSave: false,
+    });
+
+    userGoogleLoginSuccessCounter.inc({
+        method: req.method,
+        route: req.route?.path || req.path,
+        status_code: 200,
     });
 
     return res

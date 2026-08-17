@@ -1,29 +1,29 @@
-verIsion: "3.8"
+version: "3.8"
 
 services:
   frontend:
-    image: vinitparmar03/cloudvault-frontend:04
+    image: vinitparmar03/cloudvault-frontend:05
     build:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        VTE_API_URL: http://vault.local.com/api/v1
+        VITE_API_URL: http://vault.local.com/api/v1
         VITE_GOOGLE_CLIENT_ID: google_client_id
 
   gateway:
-    image: vinitparmar03/cloudvault-gateway:05
+    image: vinitparmar03/cloudvault-gateway:07
     build:
       context: ./gateway
       dockerfile: Dockerfile
 
   user-service:
-    image: vinitparmar03/cloudvault-user-service:05
+    image: vinitparmar03/cloudvault-user-service:06
     build:
       context: ./user-service
       dockerfile: Dockerfile
 
   vault-service:
-    image: vinitparmar03/cloudvault-vault-service:06
+    image: vinitparmar03/cloudvault-vault-service:08
     build:
       context: ./vault-service
       dockerfile: Dockerfile

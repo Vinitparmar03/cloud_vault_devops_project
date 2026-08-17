@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: vault-service
-        image: vinitparmar03/cloudvault-vault-service:06
+        image: vinitparmar03/cloudvault-vault-service:08
         ports:
         - containerPort: 5002
         env:

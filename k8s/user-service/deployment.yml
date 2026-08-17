@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: vinitparmar03/cloudvault-user-service:05
+        image: vinitparmar03/cloudvault-user-service:06
         ports:
         - containerPort: 5001
         env:

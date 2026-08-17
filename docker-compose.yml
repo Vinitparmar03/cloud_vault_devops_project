@@ -7,7 +7,7 @@ services:
       dockerfile: ./Dockerfile
       args:
         - VITE_API_URL=http://localhost:8000/api/v1
-        - VITE_GOOGLE_CLIENT_ID=939138548024-8h5m956htovu5v17gnmi0krao7ogv33m.apps.googleusercontent.com
+        - VITE_GOOGLE_CLIENT_ID=google_client_id
     container_name: vault-frontend
     
     ports:

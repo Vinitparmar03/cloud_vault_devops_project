@@ -1,0 +1,34 @@
+grafana:
+  enabled: true
+
+  adminUser: admin
+  adminPassword: admin
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    hosts:
+      - grafana.local.com
+
+    path: /
+    pathType: Prefix
+
+prometheus:
+  enabled: true
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    hosts:
+      - prometheus.local.com
+
+    paths: 
+      - /
+    pathType: Prefix
+  
+  prometheusSpec:
+    serviceMonitorSelector:
+      matchLabels:
+        release: monitoring
