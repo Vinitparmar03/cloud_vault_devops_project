@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: vinitparmar03/cloudvault-frontend:04
+        image: vinitparmar03/cloudvault-frontend:05
         imagePullPolicy: Always
         ports:
         - containerPort: 80
